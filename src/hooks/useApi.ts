@@ -20,7 +20,8 @@ async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
 export function useUnits() {
   return useQuery({
     queryKey: ['units'],
-    queryFn: () => apiFetch<{ data: any[] }>(`${BASE}/units`).then(r => r.data),
+    // queryFn: () => apiFetch<{ data: any[] }>(`${BASE}/units`).then(r => r.data),
+    queryFn: () => apiFetch<{ data: any[] }>('/api/v1/units').then(r => r.data),
     staleTime: 60_000,
   });
 }
