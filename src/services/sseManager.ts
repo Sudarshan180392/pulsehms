@@ -28,7 +28,7 @@ export class SSEManager {
   private eventQueue: QueuedEvent[] = [];
   private baseUrl: string;
 
-  constructor(baseUrl = 'http://localhost:3001') {
+  constructor(baseUrl = '/api') {
     this.baseUrl = baseUrl;
   }
 

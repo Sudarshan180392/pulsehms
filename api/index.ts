@@ -231,3 +231,5 @@ app.get('/api/v1/summary/unit-stats',(req,res)=>{
 
 const PORT = 3001;
 app.listen(PORT,()=>console.log(`✅ PulseOps Mock Server running on http://localhost:${PORT}`));
+
+export default app;

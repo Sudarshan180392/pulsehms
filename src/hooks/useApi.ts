@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useUnitStore } from '../store';
 import type { Patient, Alert } from '../types';
 
-const BASE = 'http://localhost:3001/api/v1';
+const BASE = '/api';
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, options);
