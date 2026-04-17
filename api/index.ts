@@ -104,11 +104,11 @@ setInterval(randomEvent, 5000 + Math.random()*5000);
 
 // ─── REST Endpoints ───────────────────────────────────────────────
 
-app.get('/api/v1/units',(req,res)=>{
+app.get('/v1/units',(req,res)=>{
   res.json({data:db.units});
 });
 
-app.get('/api/v1/units/:unitId/census',(req,res)=>{
+app.get('/v1/units/:unitId/census',(req,res)=>{
   const {unitId}=req.params;
   const beds=db.beds.filter((b:any)=>b.unit_id===unitId);
   const unit=db.units.find((u:any)=>u.id===unitId);
@@ -118,7 +118,7 @@ app.get('/api/v1/units/:unitId/census',(req,res)=>{
   res.json({beds,summary:{unit_id:unitId,total_beds:unit.total_beds,occupied,available,cleaning:beds.filter((b:any)=>b.status==='cleaning').length,maintenance:beds.filter((b:any)=>b.status==='maintenance').length,blocked:beds.filter((b:any)=>b.status==='blocked').length,occupancy_pct:+(occupied/unit.total_beds*100).toFixed(1)}});
 });
 
-app.get('/api/v1/patients',(req,res)=>{
+app.get('/v1/patients',(req,res)=>{
   let patients: any[] = [...db.patients];
   const {unit_id,status,acuity,search,sort_by,sort_dir,page='1',limit='100'}=req.query as any;
   if(unit_id) patients=patients.filter(p=>p.unit_id===unit_id);
@@ -142,13 +142,13 @@ app.get('/api/v1/patients',(req,res)=>{
   res.json({data:sliced,meta:{total,page:p,pages:Math.ceil(total/l)}});
 });
 
-app.get('/api/v1/patients/:id',(req,res)=>{
+app.get('/v1/patients/:id',(req,res)=>{
   const p=db.patients.find((p:any)=>p.id===req.params.id);
   if(!p) return res.status(404).json({error:'Not found'});
   res.json(p);
 });
 
-app.post('/api/v1/patients/:id/admit',(req,res)=>{
+app.post('/v1/patients/:id/admit',(req,res)=>{
   const p=db.patients.find((p:any)=>p.id===req.params.id);
   if(!p) return res.status(404).json({error:'Not found'});
   // 15% conflict simulation
@@ -166,7 +166,7 @@ app.post('/api/v1/patients/:id/admit',(req,res)=>{
   res.json({patient:p,etag:p.etag});
 });
 
-app.post('/api/v1/patients/:id/discharge',(req,res)=>{
+app.post('/v1/patients/:id/discharge',(req,res)=>{
   const p=db.patients.find((p:any)=>p.id===req.params.id);
   if(!p) return res.status(404).json({error:'Not found'});
   if(Math.random()<0.15) return res.status(409).json({error:'conflict',current_etag:p.etag,current_state:p});
@@ -178,7 +178,7 @@ app.post('/api/v1/patients/:id/discharge',(req,res)=>{
   res.json({ok:true});
 });
 
-app.post('/api/v1/patients/:id/transfer',(req,res)=>{
+app.post('/v1/patients/:id/transfer',(req,res)=>{
   const p=db.patients.find((p:any)=>p.id===req.params.id);
   if(!p) return res.status(404).json({error:'Not found'});
   if(Math.random()<0.15) return res.status(409).json({error:'conflict',current_etag:p.etag,current_state:p});
@@ -192,7 +192,7 @@ app.post('/api/v1/patients/:id/transfer',(req,res)=>{
   res.json({ok:true});
 });
 
-app.get('/api/v1/staff',(req,res)=>{
+app.get('/v1/staff',(req,res)=>{
   let staff: any[]=db.staff;
   const {unit_id,role,shift}=req.query as any;
   if(unit_id) staff=staff.filter((s:any)=>s.unit_id===unit_id);
@@ -201,7 +201,7 @@ app.get('/api/v1/staff',(req,res)=>{
   res.json({data:staff});
 });
 
-app.get('/api/v1/alerts',(req,res)=>{
+app.get('/v1/alerts',(req,res)=>{
   let alerts: any[]=db.alerts;
   const {unit_id,severity,status}=req.query as any;
   if(unit_id) alerts=alerts.filter((a:any)=>a.unit_id===unit_id);
@@ -211,7 +211,7 @@ app.get('/api/v1/alerts',(req,res)=>{
   res.json({data:alerts});
 });
 
-app.post('/api/v1/alerts/:id/acknowledge',(req,res)=>{
+app.post('/v1/alerts/:id/acknowledge',(req,res)=>{
   const a=db.alerts.find((a:any)=>a.id===req.params.id);
   if(!a) return res.status(404).json({error:'Not found'});
   a.acknowledged_by=req.body.acknowledged_by;
@@ -220,7 +220,7 @@ app.post('/api/v1/alerts/:id/acknowledge',(req,res)=>{
   res.json({ok:true});
 });
 
-app.get('/api/v1/summary/unit-stats',(req,res)=>{
+app.get('/v1/summary/unit-stats',(req,res)=>{
   const {unit_id}=req.query as any;
   const unit=db.units.find((u:any)=>u.id===unit_id);
   if(!unit) return res.status(404).json({error:'Not found'});
@@ -230,6 +230,11 @@ app.get('/api/v1/summary/unit-stats',(req,res)=>{
 });
 
 const PORT = 3001;
-app.listen(PORT,()=>console.log(`✅ PulseOps Mock Server running on http://localhost:${PORT}`));
+// Only runs the listener if we are NOT on Vercel
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`✅ PulseOps Mock Server running on http://localhost:${PORT}`);
+  });
+}
 
 export default app;
