@@ -1,21 +1,36 @@
+// {
+//   "name": "pulseops-api",
+//   "version": "1.0.0",
+//   "scripts": {
+//     "start": "ts-node index.ts",
+//     "seed": "ts-node seed.ts"
+//   },
+//   "dependencies": {
+//     "express": "^4.18.2",
+//     "cors": "^2.8.5",
+//     "uuid": "^9.0.0"
+//   },
+//   "devDependencies": {
+//     "@types/express": "^4.17.17",
+//     "@types/cors": "^2.8.13",
+//     "@types/uuid": "^9.0.2",
+//     "@types/node": "^20.0.0",
+//     "ts-node": "^10.9.1",
+//     "typescript": "^5.2.0"
+//   }
+// }
+
 {
   "name": "pulseops-api",
   "version": "1.0.0",
-  "scripts": {
-    "start": "ts-node index.ts",
-    "seed": "ts-node seed.ts"
-  },
   "dependencies": {
     "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "uuid": "^9.0.0"
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/cors": "^2.8.13",
-    "@types/uuid": "^9.0.2",
     "@types/node": "^20.0.0",
-    "ts-node": "^10.9.1",
     "typescript": "^5.2.0"
   }
 }
