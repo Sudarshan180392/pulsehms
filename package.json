@@ -10,9 +10,12 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "mock-server": "cd mock-server && npx ts-node server.ts",
-    "seed": "cd mock-server && npx ts-node seed.ts"
+    "api-server": "cd api && npx ts-node index.ts",
+    "seed": "cd api && npx ts-node seed.ts"
   },
+  "workspaces": [
+  "api"
+],
   "dependencies": {
     "@tanstack/react-query": "^5.0.0",
     "@types/cors": "^2.8.19",
