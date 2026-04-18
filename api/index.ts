@@ -248,12 +248,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Load data
-const dataPath = path.join(__dirname, 'data', 'hospital.json');
-const db: any = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
+// ✅ Vercel-safe file path using process.cwd() instead of __dirname
+let db: any = { units: [], beds: [], patients: [], staff: [], alerts: [] };
 
-// ✅ Routes must match what Express actually receives
-// Browser: /api/v1/units → Vercel → Express sees: /api/v1/units
+try {
+  const dataPath = path.join(process.cwd(), 'api', 'data', 'hospital.json');
+  const raw = fs.readFileSync(dataPath, 'utf-8');
+  db = JSON.parse(raw);
+  console.log('✅ hospital.json loaded, units:', db.units?.length);
+} catch (err) {
+  console.error('❌ Failed to load hospital.json:', err);
+}
+
 app.get('/api/v1/units', (req, res) => {
   res.json({ data: db.units });
 });
@@ -354,5 +360,4 @@ app.get('/api/v1/summary/unit-stats', (req, res) => {
   });
 });
 
-// ✅ Required for Vercel Serverless Functions
 export default app;
